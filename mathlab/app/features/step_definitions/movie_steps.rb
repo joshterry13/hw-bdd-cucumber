@@ -1,0 +1,80 @@
+# Add a declarative step here for populating the DB with movies.
+
+Given /the following movies exist/ do |movies_table|
+  movies_table.hashes.each do |movie|
+    # each returned element will be a hash whose key is the table header.
+    # you should arrange to add that movie to the database here.
+    Movie.create!(movie)
+  end
+end
+
+# Make sure that one string (regexp) occurs before or after another one
+#   on the same page
+
+Then /I should see "(.*)" before "(.*)"/ do |e1, e2|
+  #  ensure that that e1 occurs before e2.
+  #  page.body is the entire content of the page as a string.
+  page.body =~ /.#{e1}.*#{e2}/m
+end
+
+When /I should see the following movies: (.*)/ do |movies|
+  movies.split.each do |movie|
+    step %Q{I should see "#{movie}"}
+  end
+end
+When /I should not see the following movies: (.*)/ do |movies|
+  movies.split.each do |movie|
+    step %Q{I should not see "#{movie}"}
+  end
+end
+
+
+
+# Make it easier to express checking or unchecking several boxes at once
+#  "When I uncheck the following ratings: PG, G, R"
+#  "When I check the following ratings: G"
+
+When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
+  # HINT: use String#split to split up the rating_list, then
+  #   iterate over the ratings and reuse the "When I check..." or
+  #   "When I uncheck..." steps in lines 89-95 of web_steps.rb
+  rating_list.split.each do |rating|
+    step %Q{I #{uncheck}check "ratings_#{rating}"}
+  end
+end
+
+Then /I should see all the movies/ do
+  # Make sure that all the movies in the app are visible in the table
+  
+  
+  
+  #we know we need to query the database for all the movie titles here and retreive all the movie titles here. 
+  #this code is not working and we were wondering if you had some 
+  #not sure how to get just the movie titles
+  
+  #remember that Movie.find requires a primary key, which you don't have.
+  # that's because it's for finding one item, not many.
+  
+  # recall the old index controller that showed all movies:
+  # movies = Movie.all
+  # now movies is iterable and each one is an active record object
+  # movies.each do |movie|
+  # and each movie has a .title attribute
+  # -Dr. V
+  
+  # pro tip: you can test this stuff on the rails console.
+  # type 'rails c' in your app root directory to start the console
+  # type stuff like 'Movie.all' to see what it spits out
+  # you can mix in ruby code too, e.g. your .each loop below, 
+  # and you can add in puts commands to print stuff. In this way
+  # you could test that you are getting titles in your loop.
+  
+  
+  #Movie.find(movie) do |title|
+  Movie.all.each do |movie|
+    # now fix this next line to actually get the title from movie
+    step %Q{I should see "#{movie.title}"}
+  end
+end
+
+#movies.all get title in a loop
